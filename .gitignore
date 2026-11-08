@@ -9,10 +9,19 @@ admin/admin/
 assets/assets/
 includes/includes/
 
-# ── Config sensible ──
-# config/db.php contient les identifiants DB — NE PAS committer en production
-# Décommentez la ligne suivante si vous voulez l'exclure :
-# config/db.php
+# ── Fichiers Node.js / Next.js — projet PHP uniquement ──
+package.json
+package-lock.json
+next.config.js
+postcss.config.js
+tailwind.config.js
+tsconfig.json
+src/
+.next/
+out/
+.env
+.env.local
+.env.production
 
 # ── Fichiers XAMPP / environnement local ──
 *.log
@@ -20,18 +29,6 @@ includes/includes/
 *.swp
 .DS_Store
 Thumbs.db
-
-# ── Dossiers Next.js (si présents) ──
-.next/
-out/
-.env
-.env.local
-.env.production
-package.json
-package-lock.json
-next.config.js
-postcss.config.js
-src/
 
 # ── IDE ──
 .vscode/settings.json
