@@ -5,16 +5,18 @@
 
 // Base de données
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'karim_telecom');
+define('DB_USER', 'u151921317_karim');
+define('DB_PASS', 'Youmbi72@');
+define('DB_NAME', 'u151921317_karim_telecom');
 
 // WhatsApp
 define('WA_NUMBER', '237692091345');
 define('SITE_NAME', 'Karim Telecom');
 
 // URL de base
-define('BASE_URL', '/Karim_Telecom');
+// En local XAMPP : '/Karim_Telecom'
+// Sur Hostinger avec domaine : '' (vide)
+define('BASE_URL', '');
 
 // Connexion PDO
 function getDB() {
