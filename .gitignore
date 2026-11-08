@@ -1,0 +1,37 @@
+# ── Dépendances ──
+node_modules/
+
+# ── Uploads utilisateur (ne pas versionner les médias) ──
+uploads/
+
+# ── Dossier admin dupliqué (ancien) ──
+admin/admin/
+assets/assets/
+includes/includes/
+
+# ── Config sensible ──
+# config/db.php contient les identifiants DB — NE PAS committer en production
+# Décommentez la ligne suivante si vous voulez l'exclure :
+# config/db.php
+
+# ── Fichiers XAMPP / environnement local ──
+*.log
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# ── Dossiers Next.js (si présents) ──
+.next/
+out/
+.env
+.env.local
+.env.production
+package.json
+package-lock.json
+next.config.js
+postcss.config.js
+src/
+
+# ── IDE ──
+.vscode/settings.json
