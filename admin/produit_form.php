@@ -23,25 +23,37 @@ $villes = $pdo->query("SELECT * FROM villes ORDER BY nom")->fetchAll();
 $errors = [];
 $adminTitle = $id ? 'Modifier le produit' : 'Nouveau produit';
 
-$uploadDir = dirname(__DIR__) . '/uploads/produits/';
-if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-
-function makeSlug($str) {
-    $str = mb_strtolower($str);
-    foreach (['àáâã'=>'a','éèêë'=>'e','îï'=>'i','ôö'=>'o','ùûü'=>'u'] as $from=>$to)
-        $str = preg_replace('/['.$from.']/u',$to,$str);
-    $str = preg_replace('/[^a-z0-9\s-]/u','',$str);
-    return trim(preg_replace('/[\s]+/','-',trim($str)),'-');
+// Chemin upload — robuste pour XAMPP et Hostinger
+$uploadDir = rtrim(dirname(__DIR__), '/\\') . '/uploads/produits/';
+if (!is_dir($uploadDir)) {
+    @mkdir($uploadDir, 0755, true);
 }
 
-function uploadImage($file, $produitId, $uploadDir) {
-    if (!$file || $file['error'] !== UPLOAD_ERR_OK) return null;
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, ['jpg','jpeg','png','webp'])) return null;
-    if ($file['size'] > 5 * 1024 * 1024) return null;
-    $filename = 'prod_' . $produitId . '_' . uniqid() . '.' . $ext;
-    if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) return $filename;
-    return null;
+if (!function_exists('makeSlug')) {
+    function makeSlug($str) {
+        $str = mb_strtolower($str, 'UTF-8');
+        $str = str_replace(['à','á','â','ã','ä','å'],'a',$str);
+        $str = str_replace(['è','é','ê','ë'],'e',$str);
+        $str = str_replace(['ì','í','î','ï'],'i',$str);
+        $str = str_replace(['ò','ó','ô','õ','ö'],'o',$str);
+        $str = str_replace(['ù','ú','û','ü'],'u',$str);
+        $str = str_replace(['ç'],'c',$str);
+        $str = preg_replace('/[^a-z0-9\s\-]/u', '', $str);
+        return trim(preg_replace('/[\s\-]+/', '-', $str), '-');
+    }
+}
+
+if (!function_exists('uploadImage')) {
+    function uploadImage($file, $produitId, $uploadDir) {
+        if (!$file || !isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) return null;
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg','jpeg','png','webp'])) return null;
+        if ($file['size'] > 5 * 1024 * 1024) return null;
+        $filename = 'prod_' . $produitId . '_' . uniqid() . '.' . $ext;
+        if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
+        if (@move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) return $filename;
+        return null;
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
@@ -111,7 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
                 }
             }
             try {
-                $currentCount = (int)$pdo->prepare("SELECT COUNT(*) FROM produit_images WHERE produit_id=?")->execute([$id]) ? $pdo->query("SELECT COUNT(*) FROM produit_images WHERE produit_id=$id")->fetchColumn() : 0;
+                $cntStmt = $pdo->prepare("SELECT COUNT(*) FROM produit_images WHERE produit_id=?");
+                $cntStmt->execute([$id]);
+                $currentCount = (int)$cntStmt->fetchColumn();
                 foreach ($fileList as $f) {
                     if ($currentCount >= 6) break;
                     $fn = uploadImage($f, $id, $uploadDir);

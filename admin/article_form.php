@@ -18,12 +18,17 @@ if ($id) {
 
 $adminTitle = $id ? 'Modifier l\'article' : 'Nouvel article';
 
-function makeSlug($str) {
-    $str = mb_strtolower($str);
-    foreach (['àáâã'=>'a','éèêë'=>'e','îï'=>'i','ôö'=>'o','ùûü'=>'u'] as $from=>$to)
-        $str = preg_replace('/['.$from.']/u',$to,$str);
-    $str = preg_replace('/[^a-z0-9\s-]/u','',$str);
-    return trim(preg_replace('/[\s]+/','-',trim($str)),'-');
+if (!function_exists('makeSlug')) {
+    function makeSlug($str) {
+        $str = mb_strtolower($str, 'UTF-8');
+        $str = str_replace(['à','á','â','ã'],'a',$str);
+        $str = str_replace(['è','é','ê','ë'],'e',$str);
+        $str = str_replace(['î','ï'],'i',$str);
+        $str = str_replace(['ô','ö'],'o',$str);
+        $str = str_replace(['ù','û','ü'],'u',$str);
+        $str = preg_replace('/[^a-z0-9\s\-]/u', '', $str);
+        return trim(preg_replace('/[\s\-]+/', '-', $str), '-');
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
