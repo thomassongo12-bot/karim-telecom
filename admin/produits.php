@@ -55,8 +55,15 @@ include 'layout.php';
                 <label>Catégorie</label>
                 <select name="cat" style="min-width:140px;">
                     <option value="">Toutes</option>
-                    <option value="telephone" <?= $cat==='telephone'?'selected':'' ?>>Téléphones</option>
-                    <option value="accessoire" <?= $cat==='accessoire'?'selected':'' ?>>Accessoires</option>
+                    <?php
+                    $allCats = [];
+                    try { $allCats = $pdo->query("SELECT * FROM categories ORDER BY ordre ASC, nom ASC")->fetchAll(); } catch (PDOException $e) {}
+                    foreach ($allCats as $c):
+                    ?>
+                    <option value="<?= htmlspecialchars($c['slug']) ?>" <?= $cat===$c['slug']?'selected':'' ?>>
+                        <?= htmlspecialchars($c['nom']) ?>
+                    </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div style="display:flex;gap:.5rem;align-items:flex-end;">

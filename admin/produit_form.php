@@ -63,20 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_product'])) {
     $slug         = trim($_POST['slug'] ?? '') ?: makeSlug($nom);
     $marque       = trim($_POST['marque'] ?? '');
     $prix         = (int)($_POST['prix'] ?? 0);
-    // categorie : valeur du select (slug de catégorie) — on la stocke telle quelle
-    // si c'est une marque connue, on la met dans marque ET categorie = 'telephone'
-    $categorieRaw = trim($_POST['categorie'] ?? 'telephone');
-    $marques_list = ['apple','samsung','xiaomi','google','tecno','infinix','sony','huawei','oppo','oneplus','motorola','nokia','realme','itel'];
-    if (in_array(strtolower($categorieRaw), $marques_list)) {
-        // La catégorie sélectionnée est en fait une marque → type = telephone
-        $categorie = 'telephone';
-        // Si marque pas remplie, utiliser la valeur du select catégorie
-        if (empty($marque)) $marque = ucfirst($categorieRaw);
-    } elseif ($categorieRaw === 'accessoire') {
-        $categorie = 'accessoire';
-    } else {
-        $categorie = 'telephone';
-    }
+    // categorie : valeur du select (slug de catégorie dynamique depuis la table categories)
+    $categorie    = trim($_POST['categorie'] ?? '');
     $stockage     = trim($_POST['stockage'] ?? '');
     $couleur      = trim($_POST['couleur'] ?? '');
     $etat         = trim($_POST['etat'] ?? 'Neuf');
