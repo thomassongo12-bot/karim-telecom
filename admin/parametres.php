@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once '../config/db.php';
 require_once 'auth.php';
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         $ext = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
         if (in_array($ext, ['png','jpg','jpeg','svg','webp'])) {
-            $fn = 'logo_' . uniqid() . '.' . $ext;
+            $fn = 'logo_' . time().'_'.bin2hex(random_bytes(8)) . '.' . $ext;
             if (move_uploaded_file($_FILES['logo']['tmp_name'], $uploadDir . $fn)) {
                 if ($logo && file_exists($uploadDir . $logo)) unlink($uploadDir . $logo);
                 $newLogo = $fn;
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['favicon']) && $_FILES['favicon']['error'] === UPLOAD_ERR_OK) {
         $ext = strtolower(pathinfo($_FILES['favicon']['name'], PATHINFO_EXTENSION));
         if (in_array($ext, ['png','jpg','jpeg','svg','webp','ico'])) {
-            $fn = 'favicon_' . uniqid() . '.' . $ext;
+            $fn = 'favicon_' . time().'_'.bin2hex(random_bytes(8)) . '.' . $ext;
             if (move_uploaded_file($_FILES['favicon']['tmp_name'], $uploadDir . $fn)) {
                 if ($favicon && file_exists($uploadDir . $favicon)) unlink($uploadDir . $favicon);
                 $newFavicon = $fn;
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['photo_boutique']) && $_FILES['photo_boutique']['error'] === UPLOAD_ERR_OK) {
         $ext = strtolower(pathinfo($_FILES['photo_boutique']['name'], PATHINFO_EXTENSION));
         if (in_array($ext, ['png','jpg','jpeg','webp'])) {
-            $fn = 'boutique_' . uniqid() . '.' . $ext;
+            $fn = 'boutique_' . time().'_'.bin2hex(random_bytes(8)) . '.' . $ext;
             if (move_uploaded_file($_FILES['photo_boutique']['tmp_name'], $uploadDir . $fn)) {
                 if ($photoBoutique && file_exists($uploadDir . $photoBoutique)) unlink($uploadDir . $photoBoutique);
                 $newPhotoBoutique = $fn;

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once '../config/db.php';
 require_once 'auth.php';
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         if (in_array($ext, ['jpg','jpeg','png','webp'])) {
-            $fn = 'article_' . uniqid() . '.' . $ext;
+            $fn = 'article_' . time().'_'.bin2hex(random_bytes(8)) . '.' . $ext;
             if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $fn)) {
                 if ($imageActuelle && file_exists($uploadDir . $imageActuelle)) unlink($uploadDir . $imageActuelle);
                 $newImage = $fn;

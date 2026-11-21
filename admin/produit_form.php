@@ -49,7 +49,9 @@ if (!function_exists('uploadImage')) {
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($ext, ['jpg','jpeg','png','webp'])) return null;
         if ($file['size'] > 5 * 1024 * 1024) return null;
-        $filename = 'prod_' . $produitId . '_' . uniqid() . '.' . $ext;
+        // Nom de fichier garanti unique : timestamp + random hex + id produit
+        $unique   = time() . '_' . bin2hex(random_bytes(8)) . '_' . $produitId;
+        $filename = 'prod_' . $unique . '.' . $ext;
         if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
         if (@move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) return $filename;
         return null;

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 require_once '../config/db.php';
 require_once 'auth.php';
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image']) && $_FILES[
     if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
     $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
     if (in_array($ext, ['jpg','jpeg','png','webp'])) {
-        $filename = 'cat_' . uniqid() . '.' . $ext;
+        $filename = 'cat_' . time().'_'.bin2hex(random_bytes(8)) . '.' . $ext;
         move_uploaded_file($_FILES['image']['tmp_name'], $uploadDir . $filename);
         $_POST['image'] = $filename;
     }
